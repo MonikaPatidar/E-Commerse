@@ -38,6 +38,20 @@ exports.getcategory=(req,res)=>{
     })
 }
 
+exports.getCategoryByName=(req,res)=>{
+    const name=req.params.name;
+    console.log(name);
+    Category.find( { "name": name } ).then(data=>{
+        res.json({
+            data:data
+        })
+    }).catch(err=>{
+        res.json({
+            message:"error"+err
+        })
+    })
+}
+
 
 exports.updatecategory=(req,res)=>{
     console.log("update category");

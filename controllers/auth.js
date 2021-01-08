@@ -4,6 +4,7 @@ const expressJwt = require("express-jwt"); // for authorization check
 const { errorHandler } = require("../helpers/dbErrorHandler");
 
 exports.signup = (req, res) => {
+    
     // console.log("req.body", req.body);
     const user = new User(req.body);
     user.save((err, user) => {
@@ -13,6 +14,7 @@ exports.signup = (req, res) => {
             });
         }
         user.salt = undefined;
+        
         user.hashed_password = undefined;
         res.json({
             user
@@ -46,6 +48,7 @@ exports.signin = (req, res) => {
     });
 };
 
+
 exports.signout = (req, res) => {
     res.clearCookie("t");
     res.json({ message: "Signout success" });
@@ -53,11 +56,16 @@ exports.signout = (req, res) => {
 
 exports.requireSignin = expressJwt({
     secret: process.env.JWT_SECRET,
-    userProperty: "auth"
+    userProperty: "authi"
 });
 
 exports.isAuth = (req, res, next) => {
-    let user = req.profile && req.auth && req.profile._id == req.auth._id;
+    console.log("req.profile" + req.profile);
+    console.log("req.authi : " + JSON.stringify(req.authi));
+    console.log("req.profile._id" + req.profile._id);
+    console.log("req.auth._id" + req.authi._id);
+    let user = req.profile && req.authi && req.profile._id == req.authi._id;
+    console.log(user);
     if (!user) {
         return res.status(403).json({
             error: "Access denied"
